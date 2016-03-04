@@ -5,3 +5,4 @@
 *port de connexion fixé à 80 (port HTTP)
 *ServerCore.java:	void sendData(String data);
 			String receiveData();
+*Renommage des classes pour e projet Shoutcast

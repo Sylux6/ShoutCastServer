@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Controler.HandleClient;
-import Model.ChatModel;
+import Model.ShoutcastModel;
 
 public class ServerCore extends Thread{
 	private int port; //port HTTP
@@ -20,8 +20,8 @@ public class ServerCore extends Thread{
 	private BufferedReader input;
 	private PrintWriter output;
 	
-	public ServerCore() throws IOException {
-		this.port = 80; //port HTTP
+	public ServerCore(int port) throws IOException {
+		this.port = port; //port HTTP
 		this.stop = false;
 		logger = new TextLogger();
 		logger.systemMessage("Server started...");

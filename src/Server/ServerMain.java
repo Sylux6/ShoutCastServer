@@ -8,8 +8,9 @@ public class ServerMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		int port = args.length==1?Integer.parseInt(args[0]): 1234;
 		try {
-			ServerCore core = new ServerCore();
+			ServerCore core = new ServerCore(port);
 			core.start();
 			
 		} catch(IOException e){
