@@ -1,0 +1,7 @@
+04/03:
+*Reprise du code de TP (Chat)
+*Renommage	TextChatLogger.java > TextLogger.java
+		IChatLogger.java > ILogger.java
+*port de connexion fixé à 80 (port HTTP)
+*ServerCore.java:	void sendData(String data);
+			String receiveData();
