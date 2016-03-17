@@ -1,11 +1,11 @@
-package View;
+package view;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-import Model.ShoutcastModel;
+import model.ShoutcastModel;
 
 public class ShoutcastOutput implements ShoutcastProtocol{
 	PrintWriter os;

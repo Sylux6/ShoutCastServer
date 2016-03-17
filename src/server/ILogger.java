@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 public interface ILogger {
 	public void clientConnected(String ip);

@@ -1,9 +1,9 @@
-package Model;
+package model;
 
 import java.util.Set;
 import java.util.TreeMap;
 
-import Events.ShoutcastModelEvents;
+import events.ShoutcastModelEvents;
 
 public class ShoutcastModel {
 	public static final TreeMap<String, ShoutcastModelEvents> clientList = new TreeMap<>();

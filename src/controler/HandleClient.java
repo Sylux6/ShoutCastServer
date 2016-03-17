@@ -1,16 +1,16 @@
-package Controler;
+package controler;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Collection;
 
-import Events.ShoutcastModelEvents;
-import Model.ShoutcastModel;
-import Server.ILogger;
-import View.ShoutcastInput;
-import View.ShoutcastOutput;
-import View.ShoutcastProtocol;
-import View.ShoutcastProtocolException;
+import events.ShoutcastModelEvents;
+import model.ShoutcastModel;
+import server.ILogger;
+import view.ShoutcastInput;
+import view.ShoutcastOutput;
+import view.ShoutcastProtocol;
+import view.ShoutcastProtocolException;
 
 public class HandleClient implements Runnable, ShoutcastProtocol {
 	private final Socket s;

@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Controler.HandleClient;
-import Model.ShoutcastModel;
+import controler.HandleClient;
+import model.ShoutcastModel;
 
 public class ServerCore extends Thread{
 	private int port; //port HTTP
