@@ -6,17 +6,31 @@ import java.io.FileNotFoundException;
 
 public class MediaFile {
 	
-	String path;
-	FileInputStream file;
-	Metadata metadata;
+	private String path;
+	public File file;
+	public Metadata metadata;
+	int begin;	//n°byte mp3 data
 	
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int getBegin() {
+		return begin;
+	}
+
+	public void setBegin(int begin) {
+		this.begin = begin;
+	}
+
 	public MediaFile(String path) {
 		super();
 		this.path = path;
-		try {
-			this.file = new FileInputStream(new File(path));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.file = new File(path);
+		this.metadata = new Metadata(this);
 	}
 }
