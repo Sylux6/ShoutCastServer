@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 public class Metadata {
 	private int vID;
-	byte[] metadata;
+	private byte[] metadata;
 	MediaFile mediafile;
 	private String artist = null;
 	private String title = null;
@@ -30,6 +30,10 @@ public class Metadata {
 	
 	public Metadata(MediaFile mediafile) {
 		this.mediafile = mediafile;
+	}
+	
+	public byte[] getMetadata() {
+		return this.metadata;
 	}
 	
 	public boolean parse() throws IOException {

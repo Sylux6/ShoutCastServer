@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -70,34 +71,44 @@ public class ServerCore extends Thread {
 					System.out.println(is.readLine());
 					s.getOutputStream().write(b1);
 					try {
-
-						File f = new File("a.mp3");
+						File f = new File("/home/sylvain/Bureau/test.mp3");
 						FileReader fr = new FileReader(f);
-						BufferedReader br = new BufferedReader(fr);
-						char[] tmp = new char[320000 / 8];
-						byte[] tmp2 = new byte[320000 / 8];
-						int size;
-
-						try {
-
-							do {
-								size = br.read(tmp);
-								for(int i = 0; i < size ; i++){
-									tmp2[i] = (byte) tmp[i];
-								}
+						RandomAccessFile media = new RandomAccessFile(f, "r");
+						media.seek(129089);
+						long end = media.length() - 128;
+						byte[] buf = new byte[320000 / 8];
+						
+						while(media.getFilePointer() < end) {
+							media.read(buf);
+							s.getOutputStream().write(buf);
+							try {
 								Thread.sleep(1000);
-								System.out.println("envoie");
-								s.getOutputStream().write(tmp2);
-
-							} while (size > 0);
-							System.out.println("fin envoie");
-						} catch (Exception e) {
-							e.printStackTrace();
-
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
+						
+//						char[] tmp = new char[320000 / 8];
+//						byte[] tmp2 = new byte[320000 / 8];
+//						int size;
+
+//						try {
+//							do {
+//								size = br.read(tmp);
+//								for(int i = 0; i < size ; i++)
+//									tmp2[i] = (byte) tmp[i];
+//								Thread.sleep(1000);
+//								System.out.println("envoie");
+//								s.getOutputStream().write(tmp2);
+//
+//							} while (size > 0);
+//							System.out.println("fin envoie");
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//
+//						}
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
-
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
