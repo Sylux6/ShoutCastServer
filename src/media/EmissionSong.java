@@ -14,43 +14,53 @@ public class EmissionSong extends Thread {
 
 	public EmissionSong() {
 		list = new Playlist();
-		MediaFile firstSong = new MediaFile("a.mp3");
+		MediaFile firstSong = new MediaFile("c.mp3");
+		MediaFile secondSong = new MediaFile("b.mp3");
+		MediaFile troisSong = new MediaFile("c.mp3");
 		list.add(firstSong);
-		list.add(firstSong);
+		list.add(secondSong);
+		list.add(troisSong);
+		
 	}
 
 	// fonction de modification de la playList en cours
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		while (list.lenght() > 0) {
 
-		MediaFile mf = list.getMedia();
-		File f = mf.file;
-		try {
-			FileReader fr = new FileReader(f);
+			MediaFile mf = list.getMedia();
+			System.out.println("il reste :"+list.lenght());
+			File f = mf.file;
+			try {
+				FileReader fr = new FileReader(f);
 
-			RandomAccessFile media = new RandomAccessFile(f, "r");
-			media.seek(mf.getBegin());
-			long end = media.length();// - 128;
-			// fonction getBitrate?
+				RandomAccessFile media = new RandomAccessFile(f, "r");
+				media.seek(mf.getBegin());
+				long end = media.length();// - 128;
+				// fonction getBitrate?
 
-			while (media.getFilePointer() < end) {
-				media.read(buf);
-				ShoutcastModel.notifyBufferChanged();
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				while (media.getFilePointer() < end) {
+					media.read(buf);
+					System.out.println("buffer pret");
+					ShoutcastModel.notifyBufferChanged(buf);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			
 		}
 
 	}
-	public byte[] getData(){
+
+	public byte[] getData() {
 		return buf;
 	}
-	
+
 }

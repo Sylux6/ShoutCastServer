@@ -52,13 +52,13 @@ public class ServerCore extends Thread {
 //					
 //					res = "ICY 200 OK\r\n"
 					res = "HTTP/1.1 200 OK\r\n"
-//							+ "icy-name: Myradio\r\n"
-//							+ "icy-genre: Skyrim\r\n"
+							+ "icy-name: Myradio\r\n"
+							+ "icy-genre: Skyrim\r\n"
 //							+ "icy-url: http://localhost\r\n"
 					
 							+ "content-type: audio/mpeg\r\n"
-//							+ "icy-pub: 1\r\n"
-//							+ "icy-br: 320\r\n"
+							+ "icy-pub: 1\r\n"
+							+ "icy-br: 320\r\n"
 //							+ "icy-metaint: 16000\r\n"
 							+ "\r\n";
 //					
@@ -78,12 +78,12 @@ public class ServerCore extends Thread {
 					System.out.println(is.readLine());
 					s.getOutputStream().write(b1);
 					//apres vérification du header du client on l'ajout /ou non
-					HandleClient hc = new HandleClient(s, logger, es);
+					HandleClient hc = new HandleClient(s, logger/*, es*/);
 					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), hc);
-					new Thread(hc).start();
-//					ShoutcastOutput sco = new ShoutcastOutput(s.getOutputStream(), es);
-					/*
-					try {
+					(new Thread(hc)).start();             
+//					ShoutcastOutput sco = new ShoutcastOutput(s.getOutputStream()/*, es*/);
+					
+					/*try {
 						File f = new File("a.mp3");
 						FileReader fr = new FileReader(f);
 						RandomAccessFile media = new RandomAccessFile(f, "r");
@@ -93,9 +93,10 @@ public class ServerCore extends Thread {
 						
 						while(media.getFilePointer() < end) {
 							media.read(buf);
-							s.getOutputStream().write(buf);
+//							s.getOutputStream().write(es.getData());
+							sco.sendData(es.getData());
 							try {
-								Thread.sleep(500);
+								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -137,12 +138,12 @@ public class ServerCore extends Thread {
 
 	public synchronized void finish() {
 		stop = true;
-		try {
-			input.close();
-			output.close();
-		} catch (IOException e) {
-
-		}
+//		try {
+//			input.close();
+//			output.close();
+//		} catch (IOException e) {
+//
+//		}
 	}
 
 	public void sendData(String data) {

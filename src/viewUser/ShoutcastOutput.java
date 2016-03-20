@@ -14,10 +14,10 @@ public class ShoutcastOutput implements ShoutcastProtocol{
 	PrintWriter os;
 	OutputStream out;
 	EmissionSong es;
-	public ShoutcastOutput(OutputStream out,EmissionSong es) throws IOException {
+	public ShoutcastOutput(OutputStream out/*,EmissionSong es*/) throws IOException {
 		this.os = new PrintWriter(out, true);
 		this.out = out;
-		this.es = es;
+		/*this.es = es;*/
 	}
 	
 	@Override

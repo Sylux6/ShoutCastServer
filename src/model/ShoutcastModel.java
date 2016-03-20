@@ -25,9 +25,9 @@ public class ShoutcastModel {
 	public static void clearAll() {
 		//TODO?
 	}
-	public static void notifyBufferChanged(){
+	public static void notifyBufferChanged(byte[] buf){
 		for(ShoutcastModelEvents scm: clientList.values()){
-			scm.bufferReady();
+			scm.bufferReady(buf);
 		}
 	}
 

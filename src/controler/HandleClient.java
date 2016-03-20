@@ -24,20 +24,21 @@ public class HandleClient implements Runnable, ShoutcastProtocol,ShoutcastModelE
 	private boolean stop = false;
 	private EmissionSong es;
 
-	public HandleClient(Socket s, ILogger logger, EmissionSong es) throws IOException {
+	public HandleClient(Socket s, ILogger logger/*, EmissionSong es*/) throws IOException {
 		this.s = s;
 		this.logger = logger;
-		this.es = es;
+		/*this.es = es;*/
 	}
 
 
 	@Override
 	public void run() {
 		try (Socket s1 = s) {
-			cho = new ShoutcastOutput(s1.getOutputStream(),es);
+			cho = new ShoutcastOutput(s1.getOutputStream()/*,es*/);
 		} catch (IOException ex) {
 			if (!stop) {
-				finish();
+				System.out.println("on passe par ici?");
+//				finish();
 			}
 		}
 	}
@@ -45,11 +46,12 @@ public class HandleClient implements Runnable, ShoutcastProtocol,ShoutcastModelE
 	public synchronized void finish() {
 		if (!stop) {
 			stop = true;
-			try {
-				s.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+//			try {
+//				System.out.println("et la ?");
+//				s.close();
+//			} catch (IOException ex) {
+//				ex.printStackTrace();
+//			}
 //			if (name != null)
 //				ShoutcastModel.unregisterUser(name);
 //			logger.clientDisconnected(s.toString(), name);
@@ -71,17 +73,8 @@ public class HandleClient implements Runnable, ShoutcastProtocol,ShoutcastModelE
 
 
 	@Override
-	public void bufferReady() {
+	public void bufferReady(byte[] tab) {
 		// TODO Auto-generated method stub
-		byte[] tab = es.getData();
 		sendData(tab);
 	}
-	
-	
-	
-	
-
-
-
-
 }

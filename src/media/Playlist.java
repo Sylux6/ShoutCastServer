@@ -31,6 +31,9 @@ public class Playlist {
 	public void clear(){
 		pl = new ArrayList<>();
 	}
+	public int lenght(){
+		return pl.size();
+	}
 	
 	//ajout de nouvelle fonctionnalité?
 	
