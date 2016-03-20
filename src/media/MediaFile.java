@@ -9,7 +9,7 @@ public class MediaFile {
 	private String path;
 	public File file;
 	public Metadata metadata;
-	int begin;	//n°byte mp3 data
+	private int begin;	//n°byte mp3 data
 	
 	public String getPath() {
 		return path;

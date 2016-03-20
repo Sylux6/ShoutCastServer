@@ -1,4 +1,4 @@
-package view;
+package viewUser;
 
 import java.util.Collection;
 

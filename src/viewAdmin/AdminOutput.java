@@ -1,4 +1,4 @@
-package view;
+package viewAdmin;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,9 +7,11 @@ import java.util.Collection;
 
 import model.ShoutcastModel;
 
-public class ShoutcastOutput implements ShoutcastProtocol{
+
+//envoie a l'admin de l'ordre de diffusion en cours
+public class AdminOutput implements ShoutcastProtocol{
 	PrintWriter os;
-	public ShoutcastOutput(OutputStream out) throws IOException {
+	public AdminOutput(OutputStream out) throws IOException {
 		this.os = new PrintWriter(out, true);
 	}
 	@Override

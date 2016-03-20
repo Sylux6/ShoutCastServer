@@ -7,10 +7,10 @@ import java.util.Collection;
 import events.ShoutcastModelEvents;
 import model.ShoutcastModel;
 import server.ILogger;
-import view.ShoutcastInput;
-import view.ShoutcastOutput;
-import view.ShoutcastProtocol;
-import view.ShoutcastProtocolException;
+import viewUser.ShoutcastInput;
+import viewUser.ShoutcastOutput;
+import viewUser.ShoutcastProtocol;
+import viewUser.ShoutcastProtocolException;
 
 public class HandleClient implements Runnable, ShoutcastProtocol {
 	private final Socket s;

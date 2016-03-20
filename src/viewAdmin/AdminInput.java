@@ -1,4 +1,4 @@
-package view;
+package viewAdmin;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoutcastInput {
+
+//ordre de l'admin pour l'ordre de diffusion
+public class AdminInput {
 	boolean stop = false;
 	ShoutcastProtocol handler;
 	InputStream in;
 	
-	public ShoutcastInput(InputStream in, ShoutcastProtocol handler) throws IOException {
+	public AdminInput(InputStream in, ShoutcastProtocol handler) throws IOException {
 		this.in = in;
 		this.handler = handler;
 	}

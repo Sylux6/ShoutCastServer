@@ -1,4 +1,4 @@
-package view;
+package viewUser;
 
 public class ShoutcastProtocolException extends Exception {
 
