@@ -1,9 +1,7 @@
 package viewUser;
 
-import java.util.Collection;
-
 public interface ShoutcastProtocol {
 	
-	public void sendQuit();
+	public void sendData(byte[] data);
 	public void sendError(String msg);
 }

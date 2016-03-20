@@ -14,7 +14,10 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import controler.HandleClient;
 import media.EmissionSong;
+import model.ShoutcastModel;
+import viewUser.ShoutcastOutput;
 
 public class ServerCore extends Thread {
 	private int port; // port HTTP
@@ -41,61 +44,67 @@ public class ServerCore extends Thread {
 				try {
 					Socket s = ss.accept();
 					logger.clientConnected(s.toString());
-					// new Thread(new HandleClient(s, logger)).start();
+					// 
 					BufferedReader is = new BufferedReader(new InputStreamReader(s.getInputStream()));
 //					PrintWriter os = new PrintWriter(s.getOutputStream(), true);
 //
-//					String res;
+					String res;
 //					
-////					res = "ICY 200 OK\r\n"
-//					res = "HTTP/1.1 200 OK\r\n"
-////							+ "icy-name: Myradio\r\n"
-////							+ "icy-genre: Skyrim\r\n"
-////							+ "icy-url: http://localhost\r\n"
+//					res = "ICY 200 OK\r\n"
+					res = "HTTP/1.1 200 OK\r\n"
+//							+ "icy-name: Myradio\r\n"
+//							+ "icy-genre: Skyrim\r\n"
+//							+ "icy-url: http://localhost\r\n"
+					
+							+ "content-type: audio/mpeg\r\n"
+//							+ "icy-pub: 1\r\n"
+//							+ "icy-br: 320\r\n"
+//							+ "icy-metaint: 16000\r\n"
+							+ "\r\n";
 //					
-//							+ "content-type: audio/mpeg\r\n"
-////							+ "icy-pub: 1\r\n"
-////							+ "icy-br: 320\r\n"
-////							+ "icy-metaint: 16000\r\n"
-//							+ "\r\n";
-//					
-//					byte[] b1 = new byte[res.length()];
-//					for(int i = 0; i < res.length();i++){
-//						b1[i] = (byte) res.charAt(i);
-//					}
+					byte[] b1 = new byte[res.length()];
+					for(int i = 0; i < res.length();i++){
+						b1[i] = (byte) res.charAt(i);
+					}
 //					
 ////	
 //					String result;
-////					while(!(result = is.readLine()).equals("\r\n"))
-//					System.out.println(is.readLine());
-//					System.out.println(is.readLine());
-//					System.out.println(is.readLine());
-//					System.out.println(is.readLine());
-//					System.out.println(is.readLine());
-//					System.out.println(is.readLine());
-//					s.getOutputStream().write(b1);
-//					try {
-//						File f = new File("a.mp3");
-//						FileReader fr = new FileReader(f);
-//						RandomAccessFile media = new RandomAccessFile(f, "r");
-//						media.seek(129089);
-//						long end = media.length() - 128;
-//						byte[] buf = new byte[320000 / 8];
-//						
-//						while(media.getFilePointer() < end) {
-//							media.read(buf);
-//							s.getOutputStream().write(buf);
-//							try {
-//								Thread.sleep(500);
-//							} catch (InterruptedException e) {
-//								e.printStackTrace();
-//							}
-//						}
-//						
+//					while(!(result = is.readLine()).equals("\r\n"))
+					System.out.println(is.readLine());
+					System.out.println(is.readLine());
+					System.out.println(is.readLine());
+					System.out.println(is.readLine());
+					System.out.println(is.readLine());
+					System.out.println(is.readLine());
+					s.getOutputStream().write(b1);
+					//apres vérification du header du client on l'ajout /ou non
+					HandleClient hc = new HandleClient(s, logger, es);
+					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), hc);
+					new Thread(hc).start();
+//					ShoutcastOutput sco = new ShoutcastOutput(s.getOutputStream(), es);
+					/*
+					try {
+						File f = new File("a.mp3");
+						FileReader fr = new FileReader(f);
+						RandomAccessFile media = new RandomAccessFile(f, "r");
+						media.seek(129089);
+						long end = media.length() - 128;
+						byte[] buf = new byte[320000 / 8];
+						
+						while(media.getFilePointer() < end) {
+							media.read(buf);
+							s.getOutputStream().write(buf);
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						
 ////						char[] tmp = new char[320000 / 8];
 ////						byte[] tmp2 = new byte[320000 / 8];
 ////						int size;
-//
+
 ////						try {
 ////							do {
 ////								size = br.read(tmp);
@@ -111,11 +120,11 @@ public class ServerCore extends Thread {
 ////							e.printStackTrace();
 ////
 ////						}
-//					} catch (FileNotFoundException e) {
-//						e.printStackTrace();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}*/
 				} catch (SocketTimeoutException ex) {
 
 				}

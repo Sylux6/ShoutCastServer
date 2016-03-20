@@ -2,6 +2,7 @@ package model;
 
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import events.ShoutcastModelEvents;
 
@@ -9,6 +10,7 @@ public class ShoutcastModel {
 	public static final TreeMap<String, ShoutcastModelEvents> clientList = new TreeMap<>();
 
 	public static synchronized void registerClient(String ip, ShoutcastModelEvents client) {
+		System.out.println("on add le client :"+ip);
 		clientList.put(ip, client);
 	}
 
@@ -22,6 +24,11 @@ public class ShoutcastModel {
 
 	public static void clearAll() {
 		//TODO?
+	}
+	public static void notifyBufferChanged(){
+		for(ShoutcastModelEvents scm: clientList.values()){
+			scm.bufferReady();
+		}
 	}
 
 	public static void printAllClient() {
