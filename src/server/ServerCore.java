@@ -78,9 +78,10 @@ public class ServerCore extends Thread {
 					System.out.println(is.readLine());
 					s.getOutputStream().write(b1);
 					//apres vérification du header du client on l'ajout /ou non
-					HandleClient hc = new HandleClient(s, logger/*, es*/);
-					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), hc);
-					(new Thread(hc)).start();             
+//					HandleClient hc = new HandleClient(s, logger/*, es*/);
+//					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), hc);
+					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), s.getOutputStream());
+//					(new Thread(hc)).start();             
 //					ShoutcastOutput sco = new ShoutcastOutput(s.getOutputStream()/*, es*/);
 					
 					/*try {

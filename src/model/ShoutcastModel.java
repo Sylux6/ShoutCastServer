@@ -1,5 +1,7 @@
 package model;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -7,11 +9,11 @@ import java.util.logging.Logger;
 import events.ShoutcastModelEvents;
 
 public class ShoutcastModel {
-	public static final TreeMap<String, ShoutcastModelEvents> clientList = new TreeMap<>();
+	public static final TreeMap<String, OutputStream> clientList = new TreeMap<>();
 
-	public static synchronized void registerClient(String ip, ShoutcastModelEvents client) {
+	public static synchronized void registerClient(String ip, OutputStream socket) {
 		System.out.println("on add le client :"+ip);
-		clientList.put(ip, client);
+		clientList.put(ip, socket);
 	}
 
 	public static synchronized void unregisterClient(String ip) {
@@ -26,8 +28,13 @@ public class ShoutcastModel {
 		//TODO?
 	}
 	public static void notifyBufferChanged(byte[] buf){
-		for(ShoutcastModelEvents scm: clientList.values()){
-			scm.bufferReady(buf);
+		for(OutputStream s: clientList.values()){
+			try {
+				s.write(buf);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
