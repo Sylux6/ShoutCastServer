@@ -59,7 +59,7 @@ public class ServerCore extends Thread {
 							+ "content-type: audio/mpeg\r\n"
 							+ "icy-pub: 1\r\n"
 							+ "icy-br: 320\r\n"
-//							+ "icy-metaint: 16000\r\n"
+							+ "icy-metaint: 40000\r\n"
 							+ "\r\n";
 //					
 					byte[] b1 = new byte[res.length()];
@@ -68,14 +68,10 @@ public class ServerCore extends Thread {
 					}
 //					
 ////	
-//					String result;
-//					while(!(result = is.readLine()).equals("\r\n"))
-					System.out.println(is.readLine());
-					System.out.println(is.readLine());
-					System.out.println(is.readLine());
-					System.out.println(is.readLine());
-					System.out.println(is.readLine());
-					System.out.println(is.readLine());
+					String result;
+					while((result = is.readLine()).length() != 0)
+						System.out.println(result);
+					
 					s.getOutputStream().write(b1);
 					//apres vérification du header du client on l'ajout /ou non
 //					HandleClient hc = new HandleClient(s, logger/*, es*/);
