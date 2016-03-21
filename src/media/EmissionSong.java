@@ -12,7 +12,6 @@ import model.ShoutcastModel;
 public class EmissionSong extends Thread {
 	private Playlist list = null;
 	public byte[] buf = new byte[320000 / 8];
-	public byte[] meta;
 	public byte[] send;
 	int n;
 	long start, end, wait;
@@ -35,28 +34,23 @@ public class EmissionSong extends Thread {
 		while (list.lenght() > 0) {
 
 			MediaFile mf = list.getMedia();
-			if(mf.metadata.getMetadata().length % 4 != 0)
-				n = ((mf.metadata.getMetadata().length / 4) + (mf.metadata.getMetadata().length % 4) * 4);
-			else
-				n = (mf.metadata.getMetadata().length / 4);
-			meta = new byte[n * 4];
-			meta[0] = (byte)n;
-			for(int i = 0; i < mf.metadata.getMetadata().length; i++)
-				meta[i+1] = mf.metadata.getMetadata()[i];
 			System.out.println("il reste :"+list.lenght());
 			File f = mf.file;
 			try {
 				RandomAccessFile media = new RandomAccessFile(f, "r");
 				media.seek(mf.getBegin());
+				XMLBuilder xml = new XMLBuilder(mf.metadata);
+				xml.build();
 				long end = media.length();// - 128;
 				// fonction getBitrate?
 
 				while (media.getFilePointer() < end) {
 					start = System.currentTimeMillis();
 					media.read(buf);
-					send = Arrays.copyOf(buf, buf.length + meta.length);
-					for(int i = 0; i < meta.length; i++)
-						send[buf.length+i] = meta[i];
+					send = Arrays.copyOf(buf, buf.length + xml.getMeta().length + 1);
+					for(int i = 0; i < xml.getMeta().length; i++)
+						send[buf.length + i + 1] = xml.getMeta()[i];
+					send[buf.length] = (byte) xml.getN();
 					System.out.println("buffer pret");
 					ShoutcastModel.notifyBufferChanged(send);
 					end = System.currentTimeMillis();
