@@ -1,6 +1,11 @@
 package server;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Currency;
+import java.util.Date;
+
+import Admin.PlayListAdminWin;
 import media.*;
 
 public class ServerMain {
@@ -11,9 +16,10 @@ public class ServerMain {
 	public static void main(String[] args) {
 		int port = args.length==1?Integer.parseInt(args[0]): 1234;
 		try {
-
+			
 			EmissionSong pl = new EmissionSong();
 			ServerCore core = new ServerCore(port,pl);
+			new PlayListAdminWin();
 			core.start();
 			
 			pl.start();

@@ -9,17 +9,10 @@ import java.io.RandomAccessFile;
 import model.ShoutcastModel;
 
 public class EmissionSong extends Thread {
-	private Playlist list = null;
 	public byte[] buf = new byte[320000 / 8];
+	private boolean stop = false;
 
 	public EmissionSong() {
-		list = new Playlist();
-		MediaFile firstSong = new MediaFile("c.mp3");
-		MediaFile secondSong = new MediaFile("b.mp3");
-		MediaFile troisSong = new MediaFile("c.mp3");
-		list.add(firstSong);
-		list.add(secondSong);
-		list.add(troisSong);
 		
 	}
 
@@ -27,34 +20,41 @@ public class EmissionSong extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while (list.lenght() > 0) {
-
-			MediaFile mf = list.getMedia();
-			System.out.println("il reste :"+list.lenght());
-			File f = mf.file;
+		
+		while (!stop) {
+//			System.out.println("on passe ici"+Playlist.lenght());
 			try {
-				FileReader fr = new FileReader(f);
-
-				RandomAccessFile media = new RandomAccessFile(f, "r");
-				media.seek(mf.getBegin());
-				long end = media.length();// - 128;
-				// fonction getBitrate?
-
-				while (media.getFilePointer() < end) {
-					media.read(buf);
-					System.out.println("buffer pret");
-					ShoutcastModel.notifyBufferChanged(buf);
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			} catch (IOException e1) {
+				Thread.sleep(1000);
+			} catch (InterruptedException e2) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				e2.printStackTrace();
 			}
-			
+			if(Playlist.lenght() > 0){
+				MediaFile mf = Playlist.getMedia();
+				System.out.println("il reste :"+Playlist.lenght());
+				File f = mf.file;
+				try {
+					FileReader fr = new FileReader(f);
+	
+					RandomAccessFile media = new RandomAccessFile(f, "r");
+					media.seek(mf.getBegin());
+					long end = media.length();// - 128;
+					// fonction getBitrate?
+	
+					while (media.getFilePointer() < end) {
+						media.read(buf);
+						ShoutcastModel.notifyBufferChanged(buf);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		}
 
 	}

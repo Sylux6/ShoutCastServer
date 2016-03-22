@@ -2,39 +2,93 @@ package media;
 
 import java.util.ArrayList;
 
+import Admin.Observateur;
+
 public class Playlist {
-	private ArrayList<MediaFile> pl = new ArrayList<>();
-	
-	public Playlist(){
-	}
-	public Playlist(MediaFile mf){
-		pl.add(mf);
-	}
-	public Playlist(ArrayList<MediaFile> mfList){
+	public static ArrayList<MediaFile> pl = new ArrayList<>();
+	private static boolean loop = true;
+	private static ArrayList<Observateur> obs = new ArrayList<>();
+
+	public Playlist() {
 		
-		pl.addAll(mfList);
 	}
-	
-	
-	public MediaFile getMedia(){
+
+	public static MediaFile getMedia() {
 		MediaFile ret = pl.get(0);
+		if (loop) {
+			
+			pl.add(ret);
+			
+		} 
 		pl.remove(0);
+		notifyPlaylistChanged();
 		return ret;
 	}
 	
-	public void add(MediaFile mf){
+	public static void swap(int elt,boolean up){
+		MediaFile tmp = pl.get(elt);
+		if(up){
+			pl.set(elt,pl.get(elt-1));
+			pl.set(elt -1,tmp);
+		}else{
+			pl.set(elt,pl.get(elt+1));
+			pl.set(elt +1,tmp);
+		}
+		notifyPlaylistChanged();
+	}
+
+	public static void add(String s) {
+		MediaFile mf = new MediaFile(s);
 		pl.add(mf);
+		notifyPlaylistChanged();
 	}
-	public void add(ArrayList<MediaFile> mfList){
-		pl.addAll(mfList);
+
+	public static void remove(int elt) {
+		pl.remove(elt);
+		notifyPlaylistChanged();
 	}
-	public void clear(){
+	
+
+	public static void clear() {
 		pl = new ArrayList<>();
+		notifyPlaylistChanged();
 	}
-	public int lenght(){
+
+	public static int lenght() {
 		return pl.size();
 	}
+	public static void enableloop(){
+		loop = true;
+	}
+	public static void disableLoop(){
+		loop = false;
+	}
 	
-	//ajout de nouvelle fonctionnalité?
 	
+	public static String toString_(){
+		StringBuilder s = new StringBuilder();
+		for(MediaFile mf : pl){
+			s.append(mf.getPath()+"\n");
+		}
+		return s.toString();
+	}
+	
+	
+	
+	
+	
+	
+	private static void notifyPlaylistChanged(){
+		for(Observateur ob : obs){
+			ob.getPlaylist();
+		}
+	}
+	public static void addObs(Observateur ob){
+		obs.add(ob);
+	}
+	
+	
+	
+
 }
+
