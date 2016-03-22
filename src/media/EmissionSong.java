@@ -12,6 +12,7 @@ public class EmissionSong extends Thread {
 	public byte[] buf = new byte[320000 / 8];
 	private boolean stop = false;
 	private boolean next = false;
+//	private boo
 
 	public byte[] send;
 	int n;

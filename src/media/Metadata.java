@@ -59,14 +59,14 @@ public class Metadata {
         file.read(header);
  
         if (header[0] != 'I' || header[1] != 'D' || header[2] != '3') {
-        	mediafile.setBegin(0);	//Absence de tag ID3v2
+        	mediafile.setBegin(0);	// Absence de tag ID3v2
         	file.close();
             return parseID3v1();
         }
             
         vID = header[3];
         if (vID < 0 || vID > 4) {
-        	mediafile.setBegin(0);	//version ID3v2 non reconnue
+        	mediafile.setBegin(0);	// version ID3v2 non reconnue
         	file.close();
         	return parseID3v1();
         }
@@ -75,10 +75,10 @@ public class Metadata {
         mediafile.setBegin(metadatasize);
         
         boolean uses_synch = (header[5] & 0x80) != 0 ? true : false;
-        boolean has_extended_hdr = (header[5] & 0x40) != 0 ? true : false;
+        boolean extended_header = (header[5] & 0x40) != 0 ? true : false;
          
-        // Read the extended header length and skip it
-        if (has_extended_hdr) {
+        // On ignore le header étendu si nécessaire
+        if (extended_header) {
             int headersize = file.read() << 21 | file.read() << 14 | file.read() << 7 | file.read();
             file.skipBytes(headersize - 4);
         }
@@ -87,46 +87,40 @@ public class Metadata {
         file.read(buffer);
         file.close();
         metadata = buffer;
- 
-        // Prepare to parse the tag
         int length = buffer.length;
          
-        // Recreate the tag if desynchronization is used inside; we need to replace 0xFF 0x00 with 0xFF
+        // Modification du tag ID3v2 si il y a désynchronisation
         if (uses_synch) {
             int newpos = 0;
-            byte[] newbuffer = new byte[metadatasize];
+            byte[] tmp = new byte[metadatasize];
              
             for (int i = 0; i < buffer.length; i++) {
                 if (i < buffer.length - 1 && (buffer[i] & 0xFF) == 0xFF && buffer[i+1] == 0) {
-                    newbuffer[newpos++] = (byte) 0xFF;
+                    tmp[newpos++] = (byte) 0xFF;
                     i++;
                     continue;
                 }
                  
-                newbuffer[newpos++] = buffer[i];
+                tmp[newpos++] = buffer[i];
             }
  
             length = newpos;
-            buffer = newbuffer;
+            buffer = tmp;
         }
  
-        // Set some params
         int pos = 0;
         final int ID3FrameSize = vID < 3 ? 6 : 10;
          
-        // Parse the tags
+        // Parsing
         while (true) {
-            int rembytes = length - pos;
-                 
-            // Do we have the frame header?
-            if (rembytes < ID3FrameSize)
+            int leftovers = length - pos;
+            
+            if (leftovers < ID3FrameSize)
                 break;
              
-            // Is there a frame?
             if (buffer[pos] < 'A' || buffer[pos] > 'Z')
                 break;
              
-            // Frame name is 3 chars in pre-ID3v3 and 4 chars after
             String framename;
             int framesize;
              

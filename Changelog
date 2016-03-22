@@ -1,5 +1,6 @@
 
 22/03:
+*Meilleur parsing de Icy-Metadata
 *Gestion des clients ne prenant pas de metadata
 *Réimplémentation gestion des clients
 *Envoi des metadata (ARTIST + TITLE) vers le client

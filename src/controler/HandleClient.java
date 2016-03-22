@@ -68,7 +68,12 @@ public class HandleClient implements Runnable, ShoutcastProtocol,ShoutcastModelE
 	@Override
 	public void sendData(byte[] data) {
 		// TODO Auto-generated method stub
-		cho.sendData(data);
+		try {
+			cho.sendData(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
