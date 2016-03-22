@@ -24,6 +24,7 @@ import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileSystemView;
 
+import events.Observateur;
 import media.Playlist;
 
 public class PlayListAdminWin extends JFrame implements Observateur{

@@ -3,6 +3,7 @@ package media;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MediaFile {
 	
@@ -32,5 +33,11 @@ public class MediaFile {
 		this.path = path;
 		this.file = new File(path);
 		this.metadata = new Metadata(this);
+		try {
+			this.metadata.parse();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

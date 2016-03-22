@@ -1,12 +1,9 @@
 package media;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class Metadata {
 	private int vID;
@@ -14,7 +11,8 @@ public class Metadata {
 	MediaFile mediafile;
 	private String artist = null;
 	private String title = null;
-	private String album = null;
+	private MetaBuilder builder;
+	private boolean id3v1 = true;
 	
 	public String getArtist() {
 		return artist;
@@ -23,13 +21,32 @@ public class Metadata {
 	public String getTitle() {
 		return title;
 	}
-
-	public String getAlbum() {
-		return album;
-	}
 	
 	public Metadata(MediaFile mediafile) {
 		this.mediafile = mediafile;
+		this.builder = new MetaBuilder(this);
+		RandomAccessFile file;
+		try {
+			file = new RandomAccessFile(mediafile.file, "r");
+			file.seek(file.length()-128);
+	        byte[] buf = new byte[3];
+	        file.read(buf);
+	        file.close();
+	        if(buf[0] != 'T' || buf[1] != 'A' || buf[2] != 'G')
+	        	this.id3v1 = false;
+	        else
+	        	this.id3v1 = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean getID3v1() {
+		return this.id3v1;
+	}
+	
+	public MetaBuilder getMetaBuilder() {
+		return builder;
 	}
 	
 	public byte[] getMetadata() {
@@ -41,12 +58,18 @@ public class Metadata {
         byte[] header = new byte[10];
         file.read(header);
  
-        if (header[0] != 'I' || header[1] != 'D' || header[2] != '3')
-            return parseID3v1(file);
+        if (header[0] != 'I' || header[1] != 'D' || header[2] != '3') {
+        	mediafile.setBegin(0);	//Absence de tag ID3v2
+        	file.close();
+            return parseID3v1();
+        }
             
         vID = header[3];
-        if (vID < 0 || vID > 4)
-        	return parseID3v1(file);
+        if (vID < 0 || vID > 4) {
+        	mediafile.setBegin(0);	//version ID3v2 non reconnue
+        	file.close();
+        	return parseID3v1();
+        }
         
         int metadatasize = Tool.byteToInt(header[6], header[7], header[8], header[9]) + 10;
         mediafile.setBegin(metadatasize);
@@ -128,17 +151,12 @@ public class Metadata {
             	if(title == null)
             		title = parseTextField(buffer, pos + ID3FrameSize, framesize);
             }
-            
-            if(framename.equals("TALB")) {
-            	if(album == null)
-            		album = parseTextField(buffer, pos + ID3FrameSize, framesize);
-            }
                      
             pos += framesize + ID3FrameSize;
             continue;
         }
          
-        return title != null || artist != null || album != null;
+        return title != null || artist != null;
     }
  
     private String parseTextField(final byte[] buffer, int pos, int size) {
@@ -156,14 +174,14 @@ public class Metadata {
         return charset.decode(ByteBuffer.wrap(buffer, pos + 1, size - 1)).toString();
     }
     
-    public boolean parseID3v1(RandomAccessFile file) throws IOException {
-    	mediafile.setBegin(0);	//Absence de tag ID3v2
+    public boolean parseID3v1() throws IOException {
+    	RandomAccessFile file = new RandomAccessFile(mediafile.file, "r");
     	file.seek(file.length()-128);
         byte[] buf = new byte[128];
         file.read(buf);
         file.close();
         if(buf[0] != 'T' || buf[1] != 'A' || buf[2] != 'G') {
-        	
+        	return false;
         }
         metadata = buf;
         byte[] title = new byte[30];
@@ -178,7 +196,6 @@ public class Metadata {
         		album[i-60] = buf[i+3];
         }
         this.title = Tool.byteToString(title);
-        this.album = Tool.byteToString(album);
         this.artist = Tool.byteToString(artist);
         return true;
     }

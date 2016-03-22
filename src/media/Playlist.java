@@ -2,7 +2,7 @@ package media;
 
 import java.util.ArrayList;
 
-import Admin.Observateur;
+import events.Observateur;
 
 public class Playlist {
 	public static ArrayList<MediaFile> pl = new ArrayList<>();
