@@ -11,6 +11,7 @@ import model.ShoutcastModel;
 public class EmissionSong extends Thread {
 	public byte[] buf = new byte[320000 / 8];
 	private boolean stop = false;
+	private boolean next = false;
 
 	public byte[] send;
 	int n;
@@ -43,13 +44,14 @@ public class EmissionSong extends Thread {
 
 					media.seek(mf.getBegin());
 					mf.metadata.getMetaBuilder().build();
-					long end = media.length();
+					long endmp3 = media.length();
+					long end;
 					if (mf.metadata.getID3v1())
-						end -= 128; // On s'arrête au niveau de l'ID3v1
+						endmp3 -= 128; // On s'arrête au niveau de l'ID3v1
 
 					// fonction getBitrate?
 
-					while (media.getFilePointer() < end) {
+					while (media.getFilePointer() < endmp3 && !next) {
 						start = System.currentTimeMillis();
 						media.read(buf);
 						send = Arrays.copyOf(buf, buf.length + mf.metadata.getMetaBuilder().getMeta().length + 1);
@@ -67,7 +69,8 @@ public class EmissionSong extends Thread {
 						}
 						ShoutcastModel.notifyBufferChanged(send, buf);
 					}
-					System.out.println("closed");
+
+					next = false;
 					media.close();
 
 				} catch (IOException e1) {

@@ -10,29 +10,27 @@ public class Playlist {
 	private static ArrayList<Observateur> obs = new ArrayList<>();
 
 	public Playlist() {
-		
+
 	}
 
 	public static MediaFile getMedia() {
 		MediaFile ret = pl.get(0);
 		if (loop) {
-			
 			pl.add(ret);
-			
-		} 
+		}
 		pl.remove(0);
 		notifyPlaylistChanged();
 		return ret;
 	}
-	
-	public static void swap(int elt,boolean up){
+
+	public static void swap(int elt, boolean up) {
 		MediaFile tmp = pl.get(elt);
-		if(up){
-			pl.set(elt,pl.get(elt-1));
-			pl.set(elt -1,tmp);
-		}else{
-			pl.set(elt,pl.get(elt+1));
-			pl.set(elt +1,tmp);
+		if (up) {
+			pl.set(elt, pl.get(elt - 1));
+			pl.set(elt - 1, tmp);
+		} else {
+			pl.set(elt, pl.get(elt + 1));
+			pl.set(elt + 1, tmp);
 		}
 		notifyPlaylistChanged();
 	}
@@ -47,7 +45,6 @@ public class Playlist {
 		pl.remove(elt);
 		notifyPlaylistChanged();
 	}
-	
 
 	public static void clear() {
 		pl = new ArrayList<>();
@@ -57,38 +54,31 @@ public class Playlist {
 	public static int lenght() {
 		return pl.size();
 	}
-	public static void enableloop(){
+
+	public static void enableloop() {
 		loop = true;
 	}
-	public static void disableLoop(){
+
+	public static void disableLoop() {
 		loop = false;
 	}
-	
-	
-	public static String toString_(){
+
+	public static String toString_() {
 		StringBuilder s = new StringBuilder();
-		for(MediaFile mf : pl){
-			s.append(mf.getPath()+"\n");
+		for (MediaFile mf : pl) {
+			s.append(mf.getPath() + "\n");
 		}
 		return s.toString();
 	}
-	
-	
-	
-	
-	
-	
-	private static void notifyPlaylistChanged(){
-		for(Observateur ob : obs){
+
+	private static void notifyPlaylistChanged() {
+		for (Observateur ob : obs) {
 			ob.getPlaylist();
 		}
 	}
-	public static void addObs(Observateur ob){
+
+	public static void addObs(Observateur ob) {
 		obs.add(ob);
 	}
-	
-	
-	
 
 }
-
