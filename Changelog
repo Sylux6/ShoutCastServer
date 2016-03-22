@@ -1,5 +1,6 @@
 22/03:
 *Envoi des metadata (ARTIST + TITLE) vers le client
+*Création classe Client.java
 
 20/03:
 *Gestion de la connexion de plusieurs clients

@@ -2,6 +2,7 @@ package model;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -9,28 +10,31 @@ import java.util.logging.Logger;
 import events.ShoutcastModelEvents;
 
 public class ShoutcastModel {
-	public static final TreeMap<String, OutputStream> clientList = new TreeMap<>();
+	public static final TreeMap<Integer, Client> clientList = new TreeMap<>();
 
-	public static synchronized void registerClient(String ip, OutputStream socket) {
-		System.out.println("on add le client :"+ip);
-		clientList.put(ip, socket);
+	public static synchronized void registerClient(Client c) {
+		System.out.println("client added: id=" + c.getId() + " IP=" + c.getIp());
+		clientList.put(c.getId(), c);
 	}
 
 	public static synchronized void unregisterClient(String ip) {
 		clientList.remove(ip);
 	}
 
-	public static synchronized Set<String> getClientIP() {
-		return clientList.keySet();
-	}
+//	public static synchronized Set<String> getClientIP() {
+//		return clientList.keySet();
+//	}
 
 	public static void clearAll() {
 		//TODO?
 	}
-	public static void notifyBufferChanged(byte[] buf){
-		for(OutputStream s: clientList.values()){
+	public static void notifyBufferChanged(byte[] buf, byte[] bufnometa){
+		for(Client c: clientList.values()){
 			try {
-				s.write(buf);
+				if(c.isMeta())
+					c.getSocket().write(buf);
+				else
+					c.getSocket().write(bufnometa);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -38,11 +42,11 @@ public class ShoutcastModel {
 		}
 	}
 
-	public static void printAllClient() {
-		System.out.println("->");
-		for (String s : getClientIP()) {
-			System.out.println(s);
-		}
-		System.out.println("fin");
-	}
+//	public static void printAllClient() {
+//		System.out.println("->");
+//		for (String s : getClientIP()) {
+//			System.out.println(s);
+//		}
+//		System.out.println("fin");
+//	}
 }

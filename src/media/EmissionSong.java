@@ -1,11 +1,10 @@
 package media;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+
 
 import model.ShoutcastModel;
 
@@ -44,6 +43,7 @@ public class EmissionSong extends Thread {
 				if(mf.metadata.getID3v1())
 					end -= 128; //On s'arrête au niveau de l'ID3v1
 				
+				
 				// fonction getBitrate?
 
 				while (media.getFilePointer() < end) {
@@ -62,7 +62,7 @@ public class EmissionSong extends Thread {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					ShoutcastModel.notifyBufferChanged(send);
+					ShoutcastModel.notifyBufferChanged(send, buf);
 				}
 				media.close();
 			} catch (IOException e1) {

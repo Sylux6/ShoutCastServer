@@ -16,11 +16,13 @@ import java.util.logging.Logger;
 
 import controler.HandleClient;
 import media.EmissionSong;
+import model.Client;
 import model.ShoutcastModel;
 import viewUser.ShoutcastOutput;
 
 public class ServerCore extends Thread {
 	private int port; // port HTTP
+	private int n = 0;
 
 	private boolean stop;
 	private ILogger logger;
@@ -46,83 +48,33 @@ public class ServerCore extends Thread {
 					logger.clientConnected(s.toString());
 					// 
 					BufferedReader is = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//					PrintWriter os = new PrintWriter(s.getOutputStream(), true);
-//
 					String res;
-//					
-//					res = "ICY 200 OK\r\n"
 					res = "HTTP/1.1 200 OK\r\n"
 							+ "icy-name: Myradio\r\n"
-							+ "icy-genre: Skyrim\r\n"
-//							+ "icy-url: http://localhost\r\n"
+//							+ "icy-genre:\r\n"
 					
 							+ "content-type: audio/mpeg\r\n"
 							+ "icy-pub: 1\r\n"
 							+ "icy-br: 320\r\n"
 							+ "icy-metaint: 40000\r\n"
 							+ "\r\n";
-//					
+	
 					byte[] b1 = new byte[res.length()];
 					for(int i = 0; i < res.length();i++){
 						b1[i] = (byte) res.charAt(i);
 					}
-//					
-////	
-					String result;
-					while((result = is.readLine()).length() != 0)
+					String result, httpreq = "";
+					while((result = is.readLine()).length() != 0) {
 						System.out.println(result);
+						httpreq = httpreq + result;
+					}
+					
+					Client c = new Client(s.getInetAddress().getHostAddress(), httpreq, n, s.getOutputStream());
+					n++;
 					
 					s.getOutputStream().write(b1);
-					//apres vérification du header du client on l'ajout /ou non
-//					HandleClient hc = new HandleClient(s, logger/*, es*/);
-//					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), hc);
-					ShoutcastModel.registerClient(s.getInetAddress().getHostAddress(), s.getOutputStream());
-//					(new Thread(hc)).start();             
-//					ShoutcastOutput sco = new ShoutcastOutput(s.getOutputStream()/*, es*/);
-					
-					/*try {
-						File f = new File("a.mp3");
-						FileReader fr = new FileReader(f);
-						RandomAccessFile media = new RandomAccessFile(f, "r");
-						media.seek(129089);
-						long end = media.length() - 128;
-						byte[] buf = new byte[320000 / 8];
-						
-						while(media.getFilePointer() < end) {
-							media.read(buf);
-//							s.getOutputStream().write(es.getData());
-							sco.sendData(es.getData());
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						
-////						char[] tmp = new char[320000 / 8];
-////						byte[] tmp2 = new byte[320000 / 8];
-////						int size;
+					ShoutcastModel.registerClient(c);
 
-////						try {
-////							do {
-////								size = br.read(tmp);
-////								for(int i = 0; i < size ; i++)
-////									tmp2[i] = (byte) tmp[i];
-////								Thread.sleep(1000);
-////								System.out.println("envoie");
-////								s.getOutputStream().write(tmp2);
-////
-////							} while (size > 0);
-////							System.out.println("fin envoie");
-////						} catch (Exception e) {
-////							e.printStackTrace();
-////
-////						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}*/
 				} catch (SocketTimeoutException ex) {
 
 				}
