@@ -39,20 +39,21 @@ public class EmissionSong extends Thread {
 			try {
 				RandomAccessFile media = new RandomAccessFile(f, "r");
 				media.seek(mf.getBegin());
-				XMLBuilder xml = new XMLBuilder(mf.metadata);
-				xml.build();
-				long end = media.length();// - 128;
+				mf.metadata.getMetaBuilder().build();
+				long end = media.length();
+				if(mf.metadata.getID3v1())
+					end -= 128; //On s'arrête au niveau de l'ID3v1
+				
 				// fonction getBitrate?
 
 				while (media.getFilePointer() < end) {
 					start = System.currentTimeMillis();
 					media.read(buf);
-					send = Arrays.copyOf(buf, buf.length + xml.getMeta().length + 1);
-					for(int i = 0; i < xml.getMeta().length; i++)
-						send[buf.length + i + 1] = xml.getMeta()[i];
-					send[buf.length] = (byte) xml.getN();
+					send = Arrays.copyOf(buf, buf.length + mf.metadata.getMetaBuilder().getMeta().length + 1);
+					for(int i = 0; i < mf.metadata.getMetaBuilder().getMeta().length; i++)
+						send[buf.length + i + 1] = mf.metadata.getMetaBuilder().getMeta()[i];
+					send[buf.length] = (byte) mf.metadata.getMetaBuilder().getN();
 					System.out.println("buffer pret");
-					ShoutcastModel.notifyBufferChanged(send);
 					end = System.currentTimeMillis();
 					System.out.println(end - start + "ms");
 					try {
@@ -61,6 +62,7 @@ public class EmissionSong extends Thread {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					ShoutcastModel.notifyBufferChanged(send);
 				}
 				media.close();
 			} catch (IOException e1) {
