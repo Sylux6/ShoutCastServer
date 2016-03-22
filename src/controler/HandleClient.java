@@ -2,20 +2,17 @@ package controler;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Collection;
 
 import events.ShoutcastModelEvents;
-import model.ShoutcastModel;
+import media.EmissionSong;
 import server.ILogger;
-import view.ShoutcastInput;
-import view.ShoutcastOutput;
-import view.ShoutcastProtocol;
-import view.ShoutcastProtocolException;
+import viewUser.ShoutcastOutput;
+import viewUser.ShoutcastProtocol;
 
-public class HandleClient implements Runnable, ShoutcastProtocol {
+
+public class HandleClient implements Runnable, ShoutcastProtocol,ShoutcastModelEvents {
 	private final Socket s;
 	private ShoutcastOutput cho;
-	private ShoutcastInput chi;
 	private String ip = "";
 	private ILogger logger = null;
 
@@ -25,32 +22,23 @@ public class HandleClient implements Runnable, ShoutcastProtocol {
 
 	private ClientState state = ClientState.ST_INIT;
 	private boolean stop = false;
+	private EmissionSong es;
 
-	public HandleClient(Socket s, ILogger logger) throws IOException {
+	public HandleClient(Socket s, ILogger logger/*, EmissionSong es*/) throws IOException {
 		this.s = s;
 		this.logger = logger;
+		/*this.es = es;*/
 	}
 
-	@Override
-	public void sendQuit() {
-		ShoutcastModel.unregisterUser(this.name);
-		clientListChanged();
-		logger.clientDisconnected(s.toString());
-	}
 
 	@Override
 	public void run() {
 		try (Socket s1 = s) {
-			cho = new ShoutcastOutput(s1.getOutputStream());
-			chi = new ShoutcastInput(s1.getInputStream(), this);
-			try {
-				chi.doRun();
-			} catch (ShoutcastProtocolException e) {
-				finish();
-			}
+			cho = new ShoutcastOutput(s1.getOutputStream()/*,es*/);
 		} catch (IOException ex) {
 			if (!stop) {
-				finish();
+				System.out.println("on passe par ici?");
+//				finish();
 			}
 		}
 	}
@@ -58,14 +46,15 @@ public class HandleClient implements Runnable, ShoutcastProtocol {
 	public synchronized void finish() {
 		if (!stop) {
 			stop = true;
-			try {
-				s.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			if (name != null)
-				ShoutcastModel.unregisterUser(name);
-			logger.clientDisconnected(s.toString(), name);
+//			try {
+//				System.out.println("et la ?");
+//				s.close();
+//			} catch (IOException ex) {
+//				ex.printStackTrace();
+//			}
+//			if (name != null)
+//				ShoutcastModel.unregisterUser(name);
+//			logger.clientDisconnected(s.toString(), name);
 		}
 	}
 
@@ -75,4 +64,17 @@ public class HandleClient implements Runnable, ShoutcastProtocol {
 		
 	}
 
+
+	@Override
+	public void sendData(byte[] data) {
+		// TODO Auto-generated method stub
+		cho.sendData(data);
+	}
+
+
+	@Override
+	public void bufferReady(byte[] tab) {
+		// TODO Auto-generated method stub
+		sendData(tab);
+	}
 }

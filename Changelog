@@ -1,4 +1,17 @@
-17/03
+22/03:
+*Gestion des clients ne prenant pas de metadata
+*Réimplémentation gestion des clients
+*Envoi des metadata (ARTIST + TITLE) vers le client
+*Création classe Client.java
+
+20/03:
+*Gestion de la connexion de plusieurs clients
+*Contrôle du temps pour envoyer les données toutes les secondes
+
+19/03:
+*Envoi du flux audio vers le client
+
+17/03:
 *Collecte des metadata (ALBUM/ARTIST/TITLE) à partir de de ID3v2
 *Création du pacage Media pour la gestion des mp3
 
