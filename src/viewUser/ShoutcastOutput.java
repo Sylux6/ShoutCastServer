@@ -26,14 +26,10 @@ public class ShoutcastOutput implements ShoutcastProtocol{
 	}
 
 	@Override
-	public void sendData(byte[] data) {
+	public void sendData(byte[] data) throws IOException {
 		// TODO Auto-generated method stub
-		try {
 			out.write(data);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		
 	}
 

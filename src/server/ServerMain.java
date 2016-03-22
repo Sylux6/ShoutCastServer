@@ -19,7 +19,8 @@ public class ServerMain {
 			
 			EmissionSong pl = new EmissionSong();
 			ServerCore core = new ServerCore(port,pl);
-			new PlayListAdminWin();
+			new PlayListAdminWin(pl);
+			
 			core.start();
 			
 			pl.start();

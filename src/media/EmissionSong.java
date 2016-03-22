@@ -34,6 +34,7 @@ public class EmissionSong extends Thread {
 				e2.printStackTrace();
 			}
 			if (Playlist.lenght() > 0) {
+				next = false;
 				MediaFile mf = Playlist.getMedia();
 				System.out.println("il reste :" + Playlist.lenght());
 				File f = mf.file;
@@ -50,7 +51,7 @@ public class EmissionSong extends Thread {
 						endmp3 -= 128; // On s'arrête au niveau de l'ID3v1
 
 					// fonction getBitrate?
-
+					System.out.println("->"+next);
 					while (media.getFilePointer() < endmp3 && !next) {
 						start = System.currentTimeMillis();
 						media.read(buf);
@@ -69,7 +70,6 @@ public class EmissionSong extends Thread {
 						}
 						ShoutcastModel.notifyBufferChanged(send, buf);
 					}
-
 					next = false;
 					media.close();
 
@@ -77,9 +77,14 @@ public class EmissionSong extends Thread {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+
 			}
 		}
 
+	}
+	public void enableNext(){
+		System.out.println("->on active next");
+		next = true;
 	}
 
 	public byte[] getData() {

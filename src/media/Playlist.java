@@ -6,15 +6,18 @@ import events.Observateur;
 
 public class Playlist {
 	public static ArrayList<MediaFile> pl = new ArrayList<>();
-	private static boolean loop = true;
+	private static boolean loop = false;
 	private static ArrayList<Observateur> obs = new ArrayList<>();
+	private static String current;
 
 	public Playlist() {
 
 	}
 
 	public static MediaFile getMedia() {
+		
 		MediaFile ret = pl.get(0);
+		current = pl.get(0).getPath();
 		if (loop) {
 			pl.add(ret);
 		}
@@ -71,6 +74,7 @@ public class Playlist {
 		return s.toString();
 	}
 
+	
 	private static void notifyPlaylistChanged() {
 		for (Observateur ob : obs) {
 			ob.getPlaylist();
@@ -79,6 +83,9 @@ public class Playlist {
 
 	public static void addObs(Observateur ob) {
 		obs.add(ob);
+	}
+	public static String getCurrent(){
+		return current;
 	}
 
 }

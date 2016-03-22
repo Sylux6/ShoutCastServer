@@ -17,8 +17,8 @@ public class ShoutcastModel {
 		clientList.put(c.getId(), c);
 	}
 
-	public static synchronized void unregisterClient(String ip) {
-		clientList.remove(ip);
+	public static synchronized void unregisterClient(int id) {
+		clientList.remove(id);
 	}
 
 //	public static synchronized Set<String> getClientIP() {
@@ -37,7 +37,8 @@ public class ShoutcastModel {
 					c.getSocket().write(bufnometa);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
+				unregisterClient(c.getId());
 			}
 		}
 	}

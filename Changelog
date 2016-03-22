@@ -1,8 +1,12 @@
+
 22/03:
 *Gestion des clients ne prenant pas de metadata
 *Réimplémentation gestion des clients
 *Envoi des metadata (ARTIST + TITLE) vers le client
 *Création classe Client.java
+*Interface graphique operationelle
+*musique en bouble 
+
 
 20/03:
 *Gestion de la connexion de plusieurs clients
