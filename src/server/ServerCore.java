@@ -57,7 +57,11 @@ public class ServerCore extends Thread {
 					for(int i = 0; i < res.length();i++){
 						b1[i] = (byte) res.charAt(i);
 					}
-					String result, httpreq = "";
+					String result,
+					httpreq = is.readLine();
+					if(!httpreq.equals("GET / HTTP/1.1"))
+						throw new RequestException();
+					System.out.println(httpreq);
 					while((result = is.readLine()).length() != 0) {
 						System.out.println(result);
 						httpreq = httpreq + result;
@@ -70,7 +74,9 @@ public class ServerCore extends Thread {
 					ShoutcastModel.registerClient(c);
 
 				} catch (SocketTimeoutException ex) {
-
+					
+				} catch (RequestException e) {
+					
 				}
 			}
 		} catch (IOException e) {
