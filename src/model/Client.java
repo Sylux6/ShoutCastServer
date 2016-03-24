@@ -4,6 +4,9 @@ import java.io.OutputStream;
 
 import media.FluxAudio;
 
+import media.Tool;
+
+
 public class Client {
 	private String ip;
 	private int id;
@@ -28,10 +31,12 @@ public class Client {
 	
 	private void parse() {
 		int i = httpreq.indexOf("Icy-MetaData");
-		if(i < 0)
-			return;
+		if(i < 0) return;
 		byte[] metaline = httpreq.substring(i).getBytes();
-		if(metaline[14] != 0)
+		i = 13;
+		while(metaline[i] != '0' && metaline[i] != '1')
+			i++;
+		if(metaline[i] != '0')
 			meta = true;
 	}
 	

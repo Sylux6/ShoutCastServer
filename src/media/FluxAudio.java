@@ -12,8 +12,10 @@ public class FluxAudio extends Thread {
 	public byte[] buf = new byte[320000 / 8];
 	private boolean stop = false;
 	private boolean next = false;
+
 	private boolean pause = false;
 	private Playlist pl;
+
 	public byte[] send;
 	int n;
 	long start, end, wait;
