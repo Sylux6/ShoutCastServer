@@ -107,7 +107,6 @@ public class FluxAudio extends Thread {
 	}
 
 	public void enableNext() {
-		// System.out.println("->on active next");
 		next = true;
 	}
 
