@@ -13,9 +13,6 @@ public class FluxAudio extends Thread {
 	private boolean stop = false;
 	private boolean next = false;
 
-	private long currentTime = 0;
-	private long previousTime = 0;
-
 	private boolean pause = false;
 	private Playlist pl;
 
@@ -47,6 +44,7 @@ public class FluxAudio extends Thread {
 			if (pl.lenght() > 0) {
 				next = false;
 				MediaFile mf = pl.getMedia();
+				buf = new byte[mf.getBitrate()/8];
 				File f = mf.file;
 
 				RandomAccessFile media;
@@ -55,6 +53,7 @@ public class FluxAudio extends Thread {
 
 					media.seek(mf.getBegin());
 					mf.metadata.getMetaBuilder().build();
+					
 					long endmp3 = media.length();
 					long end;
 					if (mf.metadata.getID3v1())
@@ -62,28 +61,10 @@ public class FluxAudio extends Thread {
 
 					while (media.getFilePointer() < endmp3 && !next) {
 						start = System.currentTimeMillis();
-						int lu;
-						synchronized (buf) {
-							lu = media.read(buf);
-
-							if (lu < buf.length) {
-								for (int i = 0; i < buf.length - lu; i++) {
-									buf[lu + i] = 0;
-								}
-							}
-						}
-
-						synchronized (send) {
-							
-							send = Arrays.copyOf(buf, buf.length + mf.metadata.getMetaBuilder().getMeta().length + 1);
-							for (int i = 0; i < mf.metadata.getMetaBuilder().getMeta().length; i++)
-								send[buf.length + i + 1] = mf.metadata.getMetaBuilder().getMeta()[i];
-							send[buf.length] = (byte) mf.metadata.getMetaBuilder().getN();
-						}
-
+						setData(mf, media);
+						setDataWithMeta(mf, media);
 						ShoutcastModel.notifyBufferChanged();
 						end = System.currentTimeMillis();
-						// System.out.println(end - start + "ms");
 						try {
 							if ((wait = end - start) <= 1000)
 								Thread.sleep(1000 - wait);
@@ -110,12 +91,35 @@ public class FluxAudio extends Thread {
 		next = true;
 	}
 
-	public synchronized void setData(byte[] buf) {
-		this.buf = buf;
+	public synchronized void setData(MediaFile mf, RandomAccessFile media)  {
+		try {
+			media.read(buf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
-	public synchronized void setDataWithMeta(byte[] buf) {
-		this.send = buf;
+	public synchronized void setDataWithMeta(MediaFile mf, RandomAccessFile media) {
+//			send = Arrays.copyOf(buf, newLength)
+			send = insertMeta(buf, mf.metadata.getMetaBuilder().getN(),mf.metadata.getMetaBuilder().getMeta(), 40000);
+	}
+	
+	private byte[] insertMeta(byte[] a1,int nb,byte[] a2, int pos){
+		send = new byte[a1.length+a2.length+1];
+		for(int i = 0 ; i < pos; i++){
+			send[i] = a1[i]; 
+		}
+		send[pos] = (byte)nb;
+		for(int i = 0 ; i < a2.length; i++){
+			send[pos+i+1] = a2[i];
+		}
+		for(int i = 0 ; i < a1.length-pos; i++){
+			send[a2.length+pos+i+1] = a1[pos+i];
+		}
+		
+		return send;
 	}
 
 	public synchronized byte[] getData() {
