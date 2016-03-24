@@ -1,5 +1,6 @@
 package model;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import media.FluxAudio;
@@ -17,6 +18,14 @@ public class Client {
 	
 	public OutputStream getSocket() {
 		return socket;
+	}
+	public void write(){
+		try {
+			if(meta)socket.write(fa.getDataWithMeta()); else socket.write(fa.getData());
+		} catch (IOException e) {
+			ShoutcastModel.unregisterClient(id);
+			
+		}
 	}
 
 	public Client(String ip, String httpreq, int id, OutputStream s,FluxAudio fa) {
@@ -54,6 +63,9 @@ public class Client {
 	}
 	public FluxAudio getFlux(){
 		return fa;
+	}
+	public String toString(){
+		return "("+id+","+ip+")";
 	}
 
 }

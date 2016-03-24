@@ -13,23 +13,30 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 
 import events.Observateur;
 import media.FluxAudio;
+import server.TextLogger;
 
 public class PlayListAdminWin extends JFrame implements Observateur {
 //	EmissionSong es;
 //	CurrentFileInterface text = new CurrentFileInterface();
+	TextLogger tl;
 	JTextArea text = new JTextArea();
 	JSpinner text_rem = new JSpinner(new SpinnerNumberModel());
 	JSpinner text_mod = new JSpinner(new SpinnerNumberModel());
 	JFileChooser fc= new JFileChooser();
 	FluxAudio fa;
 	
+	JButton pause = new JButton("pause");
+	
+	
 	public PlayListAdminWin(FluxAudio fa) {
 		// on observe la playlist
+		this.tl = tl;
 		fa.getPlaylist().addObs(this);
 	/*	this.es = new EmissionSong();
 		es.start();*/
@@ -47,7 +54,6 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		JPanel colAdm = new JPanel();
 		colAdm.setLayout(new GridLayout(8, 1));
-
 		// ligne du bouton add
 		JButton button = new JButton();
 		button.setText("add");
@@ -178,6 +184,26 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 		});
 		nextSong.add(button);
 
+		pause.setPreferredSize(new Dimension(100, 50));
+		pause.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getActionCommand().equals("pause"))
+				{
+					pause.setText("play");
+					fa.enablePause();
+					
+				}
+				else{
+					pause.setText("pause");
+					fa.disablePause();
+				}
+					
+				
+			}
+		});
 //		cb = new JCheckBox("->Pause");
 //		cb.setPreferredSize(new Dimension(100, 50));
 //		cb.addActionListener(new ActionListener() {
@@ -194,7 +220,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 //
 //			}
 //		});
-//		nextSong.add(cb);
+		nextSong.add(pause);
 		// fin ligne next
 
 		// ajout a la seconde colonne

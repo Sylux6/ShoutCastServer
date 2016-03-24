@@ -68,6 +68,7 @@ public class ServerCore extends Thread {
 					}
 					
 					Client c = new Client(s.getInetAddress().getHostAddress(), httpreq, n, s.getOutputStream(),fa);
+//					logger.clientConnected(c.toString());
 					n++;
 					
 					s.getOutputStream().write(b1);

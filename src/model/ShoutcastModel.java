@@ -1,53 +1,31 @@
 package model;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 
-import events.ShoutcastModelEvents;
+import server.ILogger;
+import server.TextLogger;
 
 public class ShoutcastModel {
-	public static final TreeMap<Integer, Client> clientList = new TreeMap<>();
-
+	public static final ConcurrentHashMap<Integer, Client> clientList = new ConcurrentHashMap<>();
+	private static ILogger tl = new TextLogger();
 	public static synchronized void registerClient(Client c) {
-		System.out.println("client added: id=" + c.getId() + " IP=" + c.getIp());
 		clientList.put(c.getId(), c);
+		tl.clientConnected(c.toString());
 	}
 
 	public static synchronized void unregisterClient(int id) {
+		tl.clientDisconnected(clientList.get(id).toString());
 		clientList.remove(id);
+		
 	}
-
-//	public static synchronized Set<String> getClientIP() {
-//		return clientList.keySet();
-//	}
 
 	public static void clearAll() {
-		//TODO?
-	}
-	public static void notifyBufferChanged(){
-		for(Client c: clientList.values()){
-			try {
-				if(c.isMeta())
-					c.getSocket().write(c.getFlux().getDataWithMeta());
-				else
-					c.getSocket().write(c.getFlux().getData());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-//				e.printStackTrace();
-				unregisterClient(c.getId());
-			}
-		}
+		// TODO?
 	}
 
-//	public static void printAllClient() {
-//		System.out.println("->");
-//		for (String s : getClientIP()) {
-//			System.out.println(s);
-//		}
-//		System.out.println("fin");
-//	}
+	public static void notifyBufferChanged() {
+		for (Client c : clientList.values()) {
+			c.write();
+		}
+	}
 }

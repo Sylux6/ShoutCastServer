@@ -1,5 +1,7 @@
 package server;
 
+import java.util.Date;
+
 public class TextLogger implements ILogger {
 
 	@Override
@@ -18,6 +20,13 @@ public class TextLogger implements ILogger {
 	public void systemMessage(String msg) {
 		// TODO Auto-generated method stub
 		System.out.println("System Message: "+ msg);
+	}
+
+	@Override
+	public void currentMusic(String musique) {
+		// TODO Auto-generated method stub
+		System.out.println("Song at "+new Date().getTime()+": "+musique);
+		
 	}
 
 }
