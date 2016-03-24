@@ -67,7 +67,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 					System.out.println(fc.getCurrentDirectory());
 					fc.setCurrentDirectory(fc.getCurrentDirectory());
 					fa.getPlaylist().add(fc.getSelectedFile().toString());
-					System.out.println("on ajoute le fichier " + path);
+					System.out.println(path + " ADDED!");
 				}
 
 				else {

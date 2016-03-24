@@ -78,8 +78,6 @@ public class FluxAudio extends Thread {
 								send[buf.length + i + 1] = mf.metadata.getMetaBuilder().getMeta()[i];
 							send[buf.length] = (byte) mf.metadata.getMetaBuilder().getN();
 						}
-
-						System.out.println("buffer pret");
 						end = System.currentTimeMillis();
 						System.out.println(end - start + "ms");
 						try {
@@ -104,7 +102,7 @@ public class FluxAudio extends Thread {
 	}
 
 	public void enableNext() {
-		System.out.println("->on active next");
+		System.out.println("->NEXT SONG");
 		next = true;
 	}
 
