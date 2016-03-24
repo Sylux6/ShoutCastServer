@@ -2,23 +2,27 @@ package model;
 
 import java.io.OutputStream;
 
+import media.FluxAudio;
+
 public class Client {
 	private String ip;
 	private int id;
 	private boolean meta = false;
 	private String httpreq;
 	private OutputStream socket;
+	private FluxAudio fa;
 	
 	public OutputStream getSocket() {
 		return socket;
 	}
 
-	public Client(String ip, String httpreq, int id, OutputStream s) {
+	public Client(String ip, String httpreq, int id, OutputStream s,FluxAudio fa) {
 		super();
 		this.ip = ip;
 		this.httpreq = httpreq;
 		this.id = id;
 		this.socket = s;
+		this.fa = fa;
 		parse();
 	}
 	
@@ -42,6 +46,9 @@ public class Client {
 	}
 	public String getHttpreq() {
 		return httpreq;
+	}
+	public FluxAudio getFlux(){
+		return fa;
 	}
 
 }

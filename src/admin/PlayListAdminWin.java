@@ -1,88 +1,86 @@
 package admin;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 
-import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.filechooser.FileSystemView;
 
 import events.Observateur;
-import media.EmissionSong;
-import media.Playlist;
+import media.FluxAudio;
 
 public class PlayListAdminWin extends JFrame implements Observateur {
+//	EmissionSong es;
+//	CurrentFileInterface text = new CurrentFileInterface();
 	JTextArea text = new JTextArea();
 	JSpinner text_rem = new JSpinner(new SpinnerNumberModel());
 	JSpinner text_mod = new JSpinner(new SpinnerNumberModel());
-
-	public PlayListAdminWin(EmissionSong es) {
+	JFileChooser fc= new JFileChooser();
+	FluxAudio fa;
+	
+	public PlayListAdminWin(FluxAudio fa) {
 		// on observe la playlist
-		Playlist.addObs(this);
-
+		fa.getPlaylist().addObs(this);
+	/*	this.es = new EmissionSong();
+		es.start();*/
+		this.fa = fa;
 		this.setTitle("Page d'administration");
 		this.setSize(600, 500);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		JPanel content = new JPanel();
 		content.setPreferredSize(new Dimension(this.getWidth(), this.getHeight()));
 		content.setBackground(Color.white);
 		content.setLayout(new GridLayout(1, 2, 5, 5));
-		content.add(new JScrollPane(text));
+		JScrollPane a = new JScrollPane(text);
+		content.add(a);
 
 		JPanel colAdm = new JPanel();
 		colAdm.setLayout(new GridLayout(8, 1));
 
+		// ligne du bouton add
 		JButton button = new JButton();
 		button.setText("add");
-		button.setPreferredSize(new Dimension(100, 50));
+		button.setPreferredSize(new Dimension(200, 50));
 		button.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				JFileChooser fc = new JFileChooser();
+				
 				fc.showOpenDialog(null);
 				String path = null;
 				if (fc.getSelectedFile() != null)
 					path = fc.getSelectedFile().toString();
 
 				if (path != null && (path.endsWith(".mp3") || path.endsWith(".ogg"))) {
-					Playlist.add(fc.getSelectedFile().toString());
+					System.out.println(fc.getCurrentDirectory());
+					fc.setCurrentDirectory(fc.getCurrentDirectory());
+					fa.getPlaylist().add(fc.getSelectedFile().toString());
 					System.out.println("on ajoute le fichier " + path);
 				}
 
 				else {
-					// new JOptionPane("type de fichier non supporter");
+					// new JOptionPane("erreur type non supporter");
 				}
 			}
 		});
 
 		JPanel addMusique = new JPanel();
 		addMusique.add(button);
+		// fin ligne bouton add
 
+		// ligne bouton delete
 		JPanel delMusique = new JPanel();
 		button = new JButton("del");
 		button.setPreferredSize(new Dimension(100, 50));
@@ -91,14 +89,15 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Playlist.remove(Integer.parseInt(text_rem.get));
-				Playlist.remove((Integer) text_rem.getValue());
-				// System.out.println("on veux suprimer le
-				// "+(Integer)text_mod.getValue());
+				fa.getPlaylist().remove((Integer) text_rem.getValue());
 			}
 		});
 		text_rem.setPreferredSize(new Dimension(50, 40));
 		delMusique.add(text_rem);
+
+		// fin ligne bouton delete
+
+		// ligne bouton swap
 		JPanel modMusique = new JPanel();
 		button = new JButton("up");
 		button.setPreferredSize(new Dimension(100, 50));
@@ -107,12 +106,12 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (e.getActionCommand().equals("up")) {
-					Playlist.swap((Integer) text_mod.getValue(), true);
+					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
 				}
 
 				else {
-					Playlist.swap((Integer) text_mod.getValue(), false);
+					fa.getPlaylist().swap((Integer) text_mod.getValue(), false);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() + 1));
 				}
 
@@ -129,18 +128,24 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 				// TODO Auto-generated method stub
 
 				if (e.getActionCommand().equals("up")) {
-					Playlist.swap((Integer) text_mod.getValue(), true);
+					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
 				}
 
 				else {
-					Playlist.swap((Integer) text_mod.getValue(), false);
+					fa.getPlaylist().swap((Integer) text_mod.getValue(), false);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() + 1));
 				}
 
 			}
 		});
+		modMusique.add(button);
+		text_mod.setPreferredSize(new Dimension(50, 40));
+		modMusique.add(text_mod);
 
+		// fin ligne bouton modification
+
+		// ligne loop
 		JPanel loop = new JPanel();
 		JCheckBox cb = new JCheckBox("->Loop");
 		cb.addActionListener(new ActionListener() {
@@ -149,20 +154,16 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				if (((JCheckBox) e.getSource()).isSelected()) {
-					Playlist.enableloop();
+					fa.getPlaylist().enableloop();
 				} else {
-					Playlist.disableLoop();
+					fa.getPlaylist().disableLoop();
 				}
 			}
 		});
 		loop.add(cb);
+		// fin loop
 
-
-		modMusique.add(button);
-		text_mod.setPreferredSize(new Dimension(50, 40));
-		modMusique.add(text_mod);
-		
-		
+		// ligne next
 		JPanel nextSong = new JPanel();
 		button = new JButton();
 		button.setPreferredSize(new Dimension(100, 50));
@@ -172,12 +173,31 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				es.enableNext();
+				fa.enableNext();
 			}
 		});
 		nextSong.add(button);
-		
-		
+
+//		cb = new JCheckBox("->Pause");
+//		cb.setPreferredSize(new Dimension(100, 50));
+//		cb.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				synchronized (fa.getPlaylist()) {
+//					if (((JCheckBox) e.getSource()).isSelected()) {
+//							
+//						
+//					} else {
+//					}
+//				}
+//
+//			}
+//		});
+//		nextSong.add(cb);
+		// fin ligne next
+
+		// ajout a la seconde colonne
 		colAdm.add(addMusique);
 		colAdm.add(new JPanel());
 		colAdm.add(delMusique);
@@ -197,14 +217,18 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 	}
 
 	public void getPlaylist() {
-		String s = Playlist.toString_();
+		String s = fa.getPlaylist().toString();
 
-		text.setText("en cours:" + getCurrentSong() + "\n" + s);
+//		text.setTitle(getCurrentSong()+"");
+//		text.setPlaylist(s.split("\r\n"));
+//		text.repaint();
+		text.setText("en cours: "+getCurrentSong()+"\n\n"+s);
 
 	}
 
 	public String getCurrentSong() {
-		return Playlist.getCurrent();
+		return fa.getPlaylist().getCurrent();
 	}
+
 
 }

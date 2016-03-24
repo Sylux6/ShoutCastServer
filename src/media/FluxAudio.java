@@ -1,23 +1,27 @@
 package media;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.Date;
 
 import model.ShoutcastModel;
 
-public class EmissionSong extends Thread {
+public class FluxAudio extends Thread {
 	public byte[] buf = new byte[320000 / 8];
 	private boolean stop = false;
 	private boolean next = false;
-
+	private boolean pause = false;
+	private Playlist pl;
 	public byte[] send;
 	int n;
 	long start, end, wait;
-
-	public EmissionSong() {
+	public FluxAudio() {
+		this.pl = new Playlist();
+	}
+	public FluxAudio(Playlist pl){
+		this.pl = pl;
 	}
 
 	// fonction de modification de la playList en cours
@@ -33,10 +37,12 @@ public class EmissionSong extends Thread {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			if (Playlist.lenght() > 0) {
+			
+			
+			if (pl.lenght() > 0) {
 				next = false;
-				MediaFile mf = Playlist.getMedia();
-				System.out.println("il reste :" + Playlist.lenght());
+				MediaFile mf = pl.getMedia();
+				System.out.println("il reste :" + pl.lenght());
 				File f = mf.file;
 
 				RandomAccessFile media;
@@ -51,14 +57,26 @@ public class EmissionSong extends Thread {
 						endmp3 -= 128; // On s'arrête au niveau de l'ID3v1
 
 					// fonction getBitrate?
-					System.out.println("->"+next);
+					System.out.println("->" + next);
 					while (media.getFilePointer() < endmp3 && !next) {
 						start = System.currentTimeMillis();
-						media.read(buf);
+						int lu;
+						synchronized (buf) {
+							lu = media.read(buf);
+						}
+
+						if (lu < buf.length) {
+							for (int i = 0; i < buf.length - lu; i++) {
+								buf[lu + i] = 0;
+							}
+						}
 						send = Arrays.copyOf(buf, buf.length + mf.metadata.getMetaBuilder().getMeta().length + 1);
-						for (int i = 0; i < mf.metadata.getMetaBuilder().getMeta().length; i++)
-							send[buf.length + i + 1] = mf.metadata.getMetaBuilder().getMeta()[i];
-						send[buf.length] = (byte) mf.metadata.getMetaBuilder().getN();
+						synchronized (send) {
+							for (int i = 0; i < mf.metadata.getMetaBuilder().getMeta().length; i++)
+								send[buf.length + i + 1] = mf.metadata.getMetaBuilder().getMeta()[i];
+							send[buf.length] = (byte) mf.metadata.getMetaBuilder().getN();
+						}
+
 						System.out.println("buffer pret");
 						end = System.currentTimeMillis();
 						System.out.println(end - start + "ms");
@@ -68,7 +86,7 @@ public class EmissionSong extends Thread {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
-						ShoutcastModel.notifyBufferChanged(send, buf);
+						ShoutcastModel.notifyBufferChanged();
 					}
 					next = false;
 					media.close();
@@ -82,13 +100,39 @@ public class EmissionSong extends Thread {
 		}
 
 	}
-	public void enableNext(){
+
+	public void enableNext() {
 		System.out.println("->on active next");
 		next = true;
 	}
 
-	public byte[] getData() {
+	public synchronized void setData(byte[] buf) {
+		this.buf = buf;
+	}
+
+	public synchronized void setDataWithMeta(byte[] buf) {
+		this.send = buf;
+	}
+
+	public synchronized byte[] getData() {
+		//renvoyer que un bout si le bitrate est petit
 		return buf;
+	}
+
+	public synchronized byte[] getDataWithMeta() {
+		//construction ici serai mieux
+		return send;
+	}
+	
+	
+	public void enablePause(){
+		pause = true;
+	}
+	public void disablePause(){
+		pause = false;
+	}
+	public Playlist getPlaylist(){
+		return pl;
 	}
 
 }

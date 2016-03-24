@@ -1,24 +1,18 @@
 package server;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.RandomAccessFile;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import controler.HandleClient;
-import media.EmissionSong;
+import media.FluxAudio;
 import model.Client;
 import model.ShoutcastModel;
-import viewUser.ShoutcastOutput;
 
 public class ServerCore extends Thread {
 	private int port; // port HTTP
@@ -29,14 +23,14 @@ public class ServerCore extends Thread {
 
 	private BufferedReader input;
 	private PrintWriter output;
-	private EmissionSong es;
+	private FluxAudio fa;
 
-	public ServerCore(int port,EmissionSong es) throws IOException {
+	public ServerCore(int port,FluxAudio fa) throws IOException {
 		this.port = port; // port HTTP
 		this.stop = false;
+		this.fa = fa;
 		logger = new TextLogger();
 		logger.systemMessage("Server started...");
-		this.es = es;
 	}
 
 	public void run() {
@@ -69,7 +63,7 @@ public class ServerCore extends Thread {
 						httpreq = httpreq + result;
 					}
 					
-					Client c = new Client(s.getInetAddress().getHostAddress(), httpreq, n, s.getOutputStream());
+					Client c = new Client(s.getInetAddress().getHostAddress(), httpreq, n, s.getOutputStream(),fa);
 					n++;
 					
 					s.getOutputStream().write(b1);

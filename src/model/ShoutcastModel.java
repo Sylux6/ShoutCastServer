@@ -28,13 +28,13 @@ public class ShoutcastModel {
 	public static void clearAll() {
 		//TODO?
 	}
-	public static void notifyBufferChanged(byte[] buf, byte[] bufnometa){
+	public static void notifyBufferChanged(){
 		for(Client c: clientList.values()){
 			try {
 				if(c.isMeta())
-					c.getSocket().write(buf);
+					c.getSocket().write(c.getFlux().getDataWithMeta());
 				else
-					c.getSocket().write(bufnometa);
+					c.getSocket().write(c.getFlux().getData());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 //				e.printStackTrace();
