@@ -82,7 +82,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		// ligne bouton delete
 		JPanel delMusique = new JPanel();
-		button = new JButton("Delete song");
+		button = new JButton("Delete n°");
 		button.setPreferredSize(new Dimension(100, 50));
 		delMusique.add(button);
 		button.addActionListener(new ActionListener() {
