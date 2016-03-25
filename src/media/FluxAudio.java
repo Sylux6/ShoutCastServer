@@ -12,8 +12,6 @@ public class FluxAudio extends Thread {
 	public byte[] buf = new byte[320000 / 8];
 	private boolean stop = false;
 	private boolean next = false;
-
-	private boolean pause = false;
 	private Playlist pl;
 
 	public byte[] send;
@@ -59,14 +57,7 @@ public class FluxAudio extends Thread {
 						endmp3 -= 128; // On s'arrête au niveau de l'ID3v1
 
 					while (media.getFilePointer() < endmp3 && !next) {
-						while(pause){
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+						
 						start = System.currentTimeMillis();
 						setData(mf, media);
 						setDataWithMeta(mf, media);
@@ -98,7 +89,7 @@ public class FluxAudio extends Thread {
 		next = true;
 	}
 
-	public synchronized void setData(MediaFile mf, RandomAccessFile media)  {
+	private synchronized void setData(MediaFile mf, RandomAccessFile media)  {
 		try {
 			media.read(buf);
 		} catch (IOException e) {
@@ -108,7 +99,7 @@ public class FluxAudio extends Thread {
 
 	}
 
-	public synchronized void setDataWithMeta(MediaFile mf, RandomAccessFile media) {
+	private synchronized void setDataWithMeta(MediaFile mf, RandomAccessFile media) {
 //			send = Arrays.copyOf(buf, newLength)
 			send = insertMeta(buf, mf.metadata.getMetaBuilder().getN(),mf.metadata.getMetaBuilder().getMeta(), 40000);
 	}
@@ -139,13 +130,6 @@ public class FluxAudio extends Thread {
 		return send;
 	}
 
-	public void enablePause() {
-		pause = true;
-	}
-
-	public void disablePause() {
-		pause = false;
-	}
 
 	public Playlist getPlaylist() {
 		return pl;
