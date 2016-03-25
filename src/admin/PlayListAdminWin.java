@@ -105,16 +105,8 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (e.getActionCommand().equals("UP")) {
-					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
-					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
-				}
-
-				else {
-					fa.getPlaylist().swap((Integer) text_mod.getValue(), false);
-					text_mod.setValue(new Integer((Integer) text_mod.getValue() + 1));
-				}
-
+				fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
+				text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
 			}
 
 		});
@@ -125,18 +117,8 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-				if (e.getActionCommand().equals("DOWN")) {
-					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
-					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
-				}
-
-				else {
-					fa.getPlaylist().swap((Integer) text_mod.getValue(), false);
-					text_mod.setValue(new Integer((Integer) text_mod.getValue() + 1));
-				}
-
+				fa.getPlaylist().swap((Integer) text_mod.getValue(), false);
+				text_mod.setValue(new Integer((Integer) text_mod.getValue() + 1));
 			}
 		});
 		modMusique.add(button);

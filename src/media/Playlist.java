@@ -28,10 +28,9 @@ public class Playlist {
 	}
 
 	public void swap(int elt, boolean up) {
-		if(elt-1 < 0 || elt+1 > pl.size()){
+		if((elt-1 < 0 && up) || (elt+1 > pl.size() && !up)){
 			return;
 		}
-		
 		MediaFile tmp = pl.get(elt);
 		if (up) {
 			pl.set(elt, pl.get(elt - 1));
