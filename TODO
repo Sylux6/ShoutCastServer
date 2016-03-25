@@ -1,4 +1,2 @@
-*meilleur affige des musique
-* pause 
-*Conversion bitrate*?
-*Cas bitrate variable
+*Fréquence échantillonnage différent 44.1/48 kHz peut poser problème
+*Support de formats supplémentaires
