@@ -12,6 +12,7 @@ public class Playlist {
 
 	public Playlist() {
 
+
 	}
 
 	public MediaFile getMedia() {

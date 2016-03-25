@@ -44,7 +44,6 @@ public class FluxAudio extends Thread {
 			if (pl.lenght() > 0) {
 				next = false;
 				MediaFile mf = pl.getMedia();
-				buf = new byte[mf.getBitrate()/8];
 				File f = mf.file;
 
 				RandomAccessFile media;
@@ -60,6 +59,14 @@ public class FluxAudio extends Thread {
 						endmp3 -= 128; // On s'arrête au niveau de l'ID3v1
 
 					while (media.getFilePointer() < endmp3 && !next) {
+						while(pause){
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 						start = System.currentTimeMillis();
 						setData(mf, media);
 						setDataWithMeta(mf, media);

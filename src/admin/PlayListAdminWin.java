@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 
@@ -24,22 +23,16 @@ import server.TextLogger;
 public class PlayListAdminWin extends JFrame implements Observateur {
 //	EmissionSong es;
 //	CurrentFileInterface text = new CurrentFileInterface();
-	TextLogger tl;
 	JTextArea text = new JTextArea();
 	JSpinner text_rem = new JSpinner(new SpinnerNumberModel());
 	JSpinner text_mod = new JSpinner(new SpinnerNumberModel());
 	JFileChooser fc= new JFileChooser();
 	FluxAudio fa;
 	
-	JButton pause = new JButton("pause");
 	
 	
 	public PlayListAdminWin(FluxAudio fa) {
-		// on observe la playlist
-		this.tl = tl;
 		fa.getPlaylist().addObs(this);
-	/*	this.es = new EmissionSong();
-		es.start();*/
 		this.fa = fa;
 		this.setTitle("Page d'administration");
 		this.setSize(600, 500);
@@ -183,44 +176,6 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 			}
 		});
 		nextSong.add(button);
-
-		pause.setPreferredSize(new Dimension(100, 50));
-		pause.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				if(e.getActionCommand().equals("pause"))
-				{
-					pause.setText("play");
-					fa.enablePause();
-					
-				}
-				else{
-					pause.setText("pause");
-					fa.disablePause();
-				}
-					
-				
-			}
-		});
-//		cb = new JCheckBox("->Pause");
-//		cb.setPreferredSize(new Dimension(100, 50));
-//		cb.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				synchronized (fa.getPlaylist()) {
-//					if (((JCheckBox) e.getSource()).isSelected()) {
-//							
-//						
-//					} else {
-//					}
-//				}
-//
-//			}
-//		});
-		nextSong.add(pause);
 		// fin ligne next
 
 		// ajout a la seconde colonne
@@ -236,18 +191,11 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 		content.add(colAdm);
 
 		this.setContentPane(content);
-		// this.setLayout(new GridLayout(1, 2));
-		// this.getContentPane().add(new JScrollPane());
 		this.setVisible(true);
-		// this.getContentPane().add();
 	}
 
 	public void getPlaylist() {
 		String s = fa.getPlaylist().toString();
-
-//		text.setTitle(getCurrentSong()+"");
-//		text.setPlaylist(s.split("\r\n"));
-//		text.repaint();
 		text.setText("en cours: "+getCurrentSong()+"\n\n"+s);
 
 	}
