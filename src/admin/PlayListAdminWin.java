@@ -50,7 +50,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 		colAdm.setLayout(new GridLayout(8, 1));
 		// ligne du bouton add
 		JButton button = new JButton();
-		button.setText("add");
+		button.setText("Add song");
 		button.setPreferredSize(new Dimension(200, 50));
 		button.addActionListener(new ActionListener() {
 
@@ -82,7 +82,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		// ligne bouton delete
 		JPanel delMusique = new JPanel();
-		button = new JButton("del");
+		button = new JButton("Delete song");
 		button.setPreferredSize(new Dimension(100, 50));
 		delMusique.add(button);
 		button.addActionListener(new ActionListener() {
@@ -99,13 +99,13 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		// ligne bouton swap
 		JPanel modMusique = new JPanel();
-		button = new JButton("up");
+		button = new JButton("UP");
 		button.setPreferredSize(new Dimension(100, 50));
 		button.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (e.getActionCommand().equals("up")) {
+				if (e.getActionCommand().equals("UP")) {
 					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
 				}
@@ -119,7 +119,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		});
 		modMusique.add(button);
-		button = new JButton("down");
+		button = new JButton("DOWN");
 		button.setPreferredSize(new Dimension(100, 50));
 		button.addActionListener(new ActionListener() {
 
@@ -127,7 +127,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 
-				if (e.getActionCommand().equals("up")) {
+				if (e.getActionCommand().equals("DOWN")) {
 					fa.getPlaylist().swap((Integer) text_mod.getValue(), true);
 					text_mod.setValue(new Integer((Integer) text_mod.getValue() - 1));
 				}
@@ -147,7 +147,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 		// ligne loop
 		JPanel loop = new JPanel();
-		JCheckBox cb = new JCheckBox("->Loop");
+		JCheckBox cb = new JCheckBox("->loop");
 		cb.addActionListener(new ActionListener() {
 
 			@Override
@@ -167,7 +167,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 		JPanel nextSong = new JPanel();
 		button = new JButton();
 		button.setPreferredSize(new Dimension(100, 50));
-		button.setText("Next");
+		button.setText("NEXT");
 		button.addActionListener(new ActionListener() {
 
 			@Override
@@ -197,7 +197,7 @@ public class PlayListAdminWin extends JFrame implements Observateur {
 
 	public void getPlaylist() {
 		String s = fa.getPlaylist().toString();
-		text.setText("en cours: "+getCurrentSong()+"\n\n"+s);
+		text.setText("Now playing: "+getCurrentSong()+"\n\n"+s);
 
 	}
 
