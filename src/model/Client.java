@@ -5,8 +5,6 @@ import java.io.OutputStream;
 
 import media.FluxAudio;
 
-import media.Tool;
-
 
 public class Client {
 	private String ip;

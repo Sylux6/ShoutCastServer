@@ -3,8 +3,6 @@ package media;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
-import java.util.Date;
 
 import model.ShoutcastModel;
 
@@ -169,12 +167,10 @@ public class FluxAudio extends Thread {
 	}
 
 	public synchronized byte[] getData() {
-		// renvoyer que un bout si le bitrate est petit
 		return buf;
 	}
 
 	public synchronized byte[] getDataWithMeta() {
-		// construction ici serai mieux
 		return send;
 	}
 

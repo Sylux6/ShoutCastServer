@@ -18,11 +18,12 @@ import javax.swing.SpinnerNumberModel;
 
 import events.Observateur;
 import media.FluxAudio;
-import server.TextLogger;
 
 public class PlayListAdminWin extends JFrame implements Observateur {
-//	EmissionSong es;
-//	CurrentFileInterface text = new CurrentFileInterface();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6988641537023091195L;
 	JTextArea text = new JTextArea();
 	JSpinner text_rem = new JSpinner(new SpinnerNumberModel());
 	JSpinner text_mod = new JSpinner(new SpinnerNumberModel());

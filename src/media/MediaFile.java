@@ -1,8 +1,6 @@
 package media;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -14,7 +12,10 @@ public class MediaFile {
 	private String path;
 	public File file;
 	public Metadata metadata;
-	private int begin;	//n°byte mp3 data
+	
+	// n°byte mp3 data
+	private int begin;
+	
 	private int bitrate;
 	private boolean vbr;
 	
